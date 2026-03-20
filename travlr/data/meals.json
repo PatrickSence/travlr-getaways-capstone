@@ -1,0 +1,20 @@
+[
+  {
+    "category": "Seafood Special",
+    "image": "seafoods.jpg",
+    "featured": "Fried Salmon Special",
+    "description": "Freshly prepared with locally sourced ingredients, our Fried Salmon Special is served with seasoned vegetables and island-style rice for a flavorful coastal dining experience."
+  },
+  {
+    "category": "Sumptuous Desserts",
+    "image": "desserts.jpg",
+    "featured": "Choco Ice Cream Sandwich",
+    "description": "A rich and refreshing treat featuring creamy chocolate ice cream layered between soft cookies, perfect for cooling down after a day in the sun."
+  },
+  {
+    "category": "Buffet",
+    "image": "buffet.jpg",
+    "featured": "Mixed Buffet",
+    "description": "Enjoy a wide selection of seafood, grilled specialties, fresh fruit, and chef-prepared favorites in our daily buffet designed to satisfy every appetite."
+  }
+]

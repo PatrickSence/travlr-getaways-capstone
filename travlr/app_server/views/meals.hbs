@@ -3,47 +3,51 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Dive Sites - Bhaccasyoniztas Beach Resort Website Template</title>
+	<title>Foods - Travlr Getaways Website Template</title>
 	<link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
 	<div id="background">
 		<div id="page">
+			<div id="page">
 			{{> header }}
 			<div id="contents">
 				<div class="box">
 					<div>
 						<div class="body">
-							<h1>Travel</h1>
-							<ul id="sites">
-								{{#each trips}}
-								<li>
-									<a href=“/travel"><img src="/images/{{this.image}}" alt="Img"></a>
-									<h2><a href=“/travel"> {{this.name}} </a></h2>
-									<p>
-										{{this.description}}
-									</p>
-								</li>
-								{{/each}}
+							<h1>Meals</h1>
+							<ul id="foods">
+  								{{#each meals}}
+    								<li>
+      								<h2><a href="/meals">{{this.category}}</a></h2>
+      							<div class="infos">
+       								<a href="/meals">
+          							<img src="/images/{{this.image}}" alt="{{this.category}}" height="169" width="780">
+          							<span class="cover"></span>
+        							</a>
+        								<p>
+          									<span>{{this.featured}}</span>
+          									{{this.description}}
+        								</p>
+      							</div>
+    								</li>
+  								{{/each}}
 							</ul>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<!-- <div id="footer"> -->
-			<div id="page">
+		<div id="page">
 				{{> footer }}
 				<div id="connect">
 					<a href="http://pinterest.com/fwtemplates/" target="_blank" class="pinterest"></a> <a href="http://freewebsitetemplates.com/go/facebook/" target="_blank" class="facebook"></a> <a href="http://freewebsitetemplates.com/go/twitter/" target="_blank" class="twitter"></a> <a href="http://freewebsitetemplates.com/go/googleplus/" target="_blank" class="googleplus"></a>
 				</div>
 			</div>
-			<p><align="center">
-				© 2023 by BHACCASYONIZTAS BEACH RESORT. All Rights Reserved
-				</align>	
+			<p>
+				© 2023 by Travlr Getaways. All Rights Reserved
 			</p>
 		</div>
-	
+	</div>
 </body>
 </html>
-										
