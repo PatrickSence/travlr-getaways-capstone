@@ -1,16 +1,31 @@
 [
     {
+        "code" : "GALR210214",
         "name" : "Gale Reef",
+        "length" : "4 nights / 5 days",
+        "start" : "2021-02-14T08:00:00Z",
+        "resort" : "Emerald Bay Resort, 3 stars",
+        "perPerson" : "799.00",
         "image" : "reef1.jpg",
         "description" : "Gale Reef is one of the most popular dive sites near the resort. Located just a short boat ride from shore, this reef is known for its crystal-clear water and vibrant coral formations. Divers frequently spot sea turtles, schools of angelfish, and the occasional reef shark gliding through the deeper sections. Because of its calm currents and excellent visibility, Gale Reef is perfect for both beginners and experienced divers. Our guided tours visit this site daily, offering guests the chance to explore colorful coral gardens and capture unforgettable underwater photographs."
 
     } ,     {
+        "code" : "DAWS210315",
         "name" : "Dawson's Reef",
+        "length" : "4 nights / 5 days",
+        "start" : "2021-03-15T08:00:00Z",
+        "resort" : "Blue Lagoon, 4 stars",
+        "perPerson" : "1199.00",
         "image" : "reef2.jpg",
         "description" : "Dawson’s Reef is a deeper dive site known for dramatic coral walls and large marine life encounters. Experienced divers often visit this reef in search of manta rays, barracuda schools, and the occasional dolphin pod that passes through the area. Because of its calm currents and excellent visibility, Gale Reef is perfect for both beginners and experienced divers. Our guided tours visit this site daily, offering guests the chance to explore colorful coral gardens and capture unforgettable underwater photographs."
 
     } ,     {
+        "code" : "CLRS210621",
         "name" : "Claire's Reef",
+        "length" : "4 nights / 5 days",
+        "start" : "2021-06-21T08:00:00Z",
+        "resort" : "Coral Sands, 5 stars",
+        "perPerson" : "1999.00",
         "image" : "reef3.jpg",
         "description" : "Claire’s Reef is a favorite location for snorkeling and relaxed dives. Shallow coral gardens stretch across the seabed, creating a colorful underwater environment filled with clownfish, butterflyfish, and vibrant coral species. The calm waters make this site ideal for families and first-time snorkelers. Guests often describe Claire’s Reef as the perfect introduction to the beauty of the ocean, with sunlight streaming through the water and illuminating the reef below."
 
