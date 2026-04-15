@@ -1,15 +1,16 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { TripCardComponent } from '../trip-card/trip-card';
 import { Trip } from '../models/trip';
 import { TripDataService } from '../services/trip-data';
+import { AuthenticationService } from '../services/authentication';
 
 @Component({
   selector: 'app-trip-listing',
   standalone: true,
-  imports: [CommonModule, TripCardComponent, RouterLink],
+  imports: [CommonModule, TripCardComponent],
   templateUrl: './trip-listing.html',
   styleUrls: ['./trip-listing.css']
 })
@@ -20,11 +21,14 @@ export class TripListingComponent implements OnInit {
   constructor(
     private tripDataService: TripDataService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthenticationService
   ) {
     console.log('trip-listing constructor');
   }
-
+  public isLoggedIn() {
+    return this.authService.isLoggedIn();
+  }
   addTrip(): void {
     this.router.navigate(['/add-trip']);
   }
