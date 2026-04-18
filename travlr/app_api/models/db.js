@@ -54,4 +54,6 @@ process.exit(0);
 connect();
 // Import Mongoose schema
 require('./travlr');
+require('./tripview');
+require('./booking');
 module.exports = mongoose;

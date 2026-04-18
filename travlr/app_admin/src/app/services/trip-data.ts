@@ -46,6 +46,18 @@ export class TripDataService {
     });
   }
 
+  public getBookings(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.baseUrl}/bookings`, {
+    headers: this.getAuthHeaders()
+  });
+}
+
+public getViews(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.baseUrl}/views`, {
+    headers: this.getAuthHeaders()
+  });
+}
+
   // Login endpoint
   public login(user: User, passwd: string): Observable<AuthResponse> {
     return this.handleAuthAPICall('login', user, passwd);

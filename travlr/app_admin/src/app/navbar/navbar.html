@@ -1,34 +1,52 @@
-<nav class="navbar navbar-expand navbar-light bg-light">
-  <a class="navbar-brand" routerLink="/">
-    <img src="/assets/images/logo.png" alt="Travlr Getaways logo">
-  </a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light px-4 py-3">
+  <div class="container-fluid">
 
-  <button
-    class="navbar-toggler"
-    type="button"
-    data-toggle="collapse"
-    data-target="#navbarNavAltMarkup"
-    aria-controls="navbarNavAltMarkup"
-    aria-expanded="false"
-    aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-      <a class="nav-link active" routerLink="/">
-        Trips <span class="sr-only">(current)</span>
-      </a>
-    </div>
+    <a class="navbar-brand d-flex align-items-center me-4" routerLink="/">
+  <img src="/assets/images/logo.png" alt="Travlr Getaways logo" class="navbar-logo me-2">
+  
+  <div class="d-flex flex-column">
+    <span class="fw-bold">Travlr Getaways</span>
+    <small class="text-muted">Admin Dashboard</small>
   </div>
+</a>
 
-  <div class="navbar-end">
-    <a class="nav-item" routerLink="/login" *ngIf="!isLoggedIn()">
-      <span class="has-icon-left">Log In</span>
-    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup"
+      aria-expanded="false"
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-    <a class="nav-item active" href="#" (click)="onLogout(); $event.preventDefault()" *ngIf="isLoggedIn()">
-      <span class="has-icon-left">Log Out</span>
-    </a>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <ul class="navbar-nav me-auto align-items-center">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/">Trips</a>
+          <a class="nav-link" routerLink="/bookings">Booking Requests</a>
+          <a class="nav-link" routerLink="/views">Trip Analytics</a>
+        </li>
+      </ul>
+
+      <div class="d-flex align-items-center gap-2">
+        <a
+          *ngIf="!isLoggedIn()"
+          routerLink="/login"
+          class="btn btn-outline-primary">
+          Log In
+        </a>
+
+        <button
+          *ngIf="isLoggedIn()"
+          type="button"
+          class="btn btn-danger"
+          (click)="onLogout()">
+          Log Out
+        </button>
+      </div>
+    </div>
+
   </div>
 </nav>

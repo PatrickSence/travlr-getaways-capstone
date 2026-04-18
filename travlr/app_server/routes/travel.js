@@ -1,6 +1,12 @@
-var express = require('express');
-var router = express.Router();
-var controller = require('../controllers/travel');
-/* GET travel page. */
-router.get('/', controller.travel);
+const express = require('express');
+const router = express.Router();
+const ctrlMain = require('../controllers/main');
+const ctrlTrips = require('../controllers/trips');
+const ctrlBookings = require('../controllers/booking');
+
+router.get('/', ctrlMain.travel);
+router.get('/:tripcode', ctrlTrips.tripDetails);
+router.get('/book/:tripcode', ctrlBookings.bookingForm);
+router.post('/book/:tripcode', ctrlBookings.submitBooking);
+
 module.exports = router;

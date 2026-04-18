@@ -18,8 +18,14 @@
     <p class="card-text">
       {{ trip.description }}
     </p>
-      <div *ngIf="isLoggedIn()">
-      <button (click)= "editTrip(trip.code)" class="btn btn-info">Edit Trip</button>
-      </div>
+<div *ngIf="isLoggedIn()" class="d-flex gap-2 flex-wrap mt-2">
+  <button (click)="editTrip(trip.code)" class="btn btn-info flex-fill">
+    Edit Trip
+  </button>
+
+  <button (click)="deleteTrip(trip.code)" class="btn btn-danger flex-fill">
+    Delete Trip
+  </button>
+</div>
     </div>  
 </div>

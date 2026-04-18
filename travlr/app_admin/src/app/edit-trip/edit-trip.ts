@@ -12,7 +12,6 @@ import { Trip } from '../models/trip';
   templateUrl: './edit-trip.html',
   styleUrl: './edit-trip.css'
 })
-
 export class EditTripComponent implements OnInit {
   editForm!: FormGroup;
   trip!: Trip;
@@ -26,15 +25,16 @@ export class EditTripComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Retrieve stashed trip ID
     let tripCode = localStorage.getItem("tripCode");
     if (!tripCode) {
       alert("Something wrong, couldn't find where I stashed tripCode!");
       this.router.navigate(['']);
       return;
     }
+
     console.log('EditTripComponent::ngOnInit');
-    console.log('tripCode:' + tripCode);
+    console.log('tripCode: ' + tripCode);
+
     this.editForm = this.formBuilder.group({
       _id: [],
       code: [tripCode, Validators.required],
@@ -45,24 +45,42 @@ export class EditTripComponent implements OnInit {
       perPerson: ['', Validators.required],
       image: ['', Validators.required],
       description: ['', Validators.required]
-    })
+    });
+
     this.tripDataService.getTrip(tripCode)
       .subscribe({
         next: (value: any) => {
-          this.trip = value;
-          // Populate our record into the form
-          this.editForm.patchValue(value[0]);
-          if (!value) {
+          console.log('Trip retrieved:', value);
+
+          const trip = Array.isArray(value) ? value[0] : value;
+
+          if (!trip) {
             this.message = 'No Trip Retrieved!';
-          } else {
-            this.message = 'Trip: ' + tripCode + ' retrieved';
+            console.log(this.message);
+            return;
           }
+
+          this.trip = trip;
+
+          this.editForm.patchValue({
+            _id: trip._id,
+            code: trip.code,
+            name: trip.name,
+            length: trip.length,
+            start: this.formatDateForInput(trip.start),
+            resort: trip.resort,
+            perPerson: trip.perPerson,
+            image: trip.image,
+            description: trip.description
+          });
+
+          this.message = 'Trip: ' + tripCode + ' retrieved';
           console.log(this.message);
         },
         error: (error: any) => {
           console.log('Error: ' + error);
         }
-      })
+      });
   }
 
   public onSubmit() {
@@ -77,8 +95,12 @@ export class EditTripComponent implements OnInit {
           error: (error: any) => {
             console.log('Error: ' + error);
           }
-        })
+        });
     }
+  }
+
+  private formatDateForInput(date: string): string {
+    return new Date(date).toISOString().split('T')[0];
   }
 
   get f() { return this.editForm.controls; }

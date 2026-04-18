@@ -1,50 +1,54 @@
 <!DOCTYPE html>
-<!-- Website template by freewebsitetemplates.com -->
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Foods - Travlr Getaways Website Template</title>
-	<link rel="stylesheet" href="css/style.css" type="text/css">
+	<title>Meals - Travlr Getaways</title>
+	<link rel="stylesheet" href="/css/style.css" type="text/css">
 </head>
 <body>
 	<div id="background">
 		<div id="page">
-			<div id="page">
 			{{> header }}
+
 			<div id="contents">
 				<div class="box">
 					<div>
 						<div class="body">
 							<h1>Meals</h1>
+
 							<ul id="foods">
-  								{{#each meals}}
-    								<li>
-      								<h2><a href="/meals">{{this.category}}</a></h2>
-      							<div class="infos">
-       								<a href="/meals">
-          							<img src="/images/{{this.image}}" alt="{{this.category}}" height="169" width="780">
-          							<span class="cover"></span>
-        							</a>
-        								<p>
-          									<span>{{this.featured}}</span>
-          									{{this.description}}
-        								</p>
-      							</div>
-    								</li>
-  								{{/each}}
+								{{#each meals}}
+								<li class="meal-item">
+									<h2><a href="/meals">{{this.category}}</a></h2>
+
+									<div class="meal-content">
+										<a href="/meals" class="meal-image">
+											<img src="/images/{{this.image}}" alt="{{this.category}}">
+										</a>
+
+										<div class="meal-text">
+											<p class="meal-featured">{{this.featured}}</p>
+											<p>{{this.description}}</p>
+										</div>
+									</div>
+								</li>
+								{{/each}}
 							</ul>
+
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div id="page">
-				{{> footer }}
-				<div id="connect">
-					<a href="http://pinterest.com/fwtemplates/" target="_blank" class="pinterest"></a> <a href="http://freewebsitetemplates.com/go/facebook/" target="_blank" class="facebook"></a> <a href="http://freewebsitetemplates.com/go/twitter/" target="_blank" class="twitter"></a> <a href="http://freewebsitetemplates.com/go/googleplus/" target="_blank" class="googleplus"></a>
-				</div>
+
+			{{> footer }}
+			<div id="connect">
+				<a href="http://pinterest.com/fwtemplates/" target="_blank" class="pinterest"></a>
+				<a href="http://freewebsitetemplates.com/go/facebook/" target="_blank" class="facebook"></a>
+				<a href="http://freewebsitetemplates.com/go/twitter/" target="_blank" class="twitter"></a>
+				<a href="http://freewebsitetemplates.com/go/googleplus/" target="_blank" class="googleplus"></a>
 			</div>
-			<p>
+
+			<p style="text-align: center;">
 				© 2023 by Travlr Getaways. All Rights Reserved
 			</p>
 		</div>

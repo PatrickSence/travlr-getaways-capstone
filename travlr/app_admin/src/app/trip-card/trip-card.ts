@@ -27,4 +27,9 @@ return this.authService.isLoggedIn();
     localStorage.setItem('tripCode', tripCode);
     this.router.navigate(['/edit-trip']);
   }
-}
+  public deleteTrip(tripCode: string): void {
+    localStorage.removeItem('tripCode');
+    localStorage.setItem('tripCode', tripCode);
+    this.router.navigate(['/trip/' + tripCode + '/delete']);
+  }
+  }

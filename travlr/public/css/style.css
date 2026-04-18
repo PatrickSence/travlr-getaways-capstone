@@ -153,13 +153,31 @@ img {
 #adbox p {
 	font-size: 16px;
 }
-.ads {
-	float: right;
-	width: 220px;
-	border-left: 1px solid #bbbbbb;
-	margin-left: 20px;
-	padding-left: 20px;
+#contents .body .ads {
+	width: 100%;
+  float: none;
+  display: block;
+  margin: 25px 0;
+  overflow: hidden;
 }
+#contents .body .ads h2,
+#contents .body .ads p {
+  width: 100%;
+  float: none;
+  display: block;
+}
+#contents .body {
+  overflow: hidden;
+}
+
+#contents .body p,
+#contents .body h2,
+#contents .body h1 {
+  max-width: 100%;
+  box-sizing: border-box;
+  word-wrap: break-word;
+}
+
 hr {
 	border:0;
 	border-top: 1px solid #bbbbbb;
@@ -335,6 +353,214 @@ hr {
 	border: 1px solid #2c9688;
 	margin-left: 15px;
 }
+
+li img {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;   /* keeps it looking good */
+  display: block;
+}
+.trip-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.trip-actions .btn {
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.trip-actions .btn-info {
+  background-color: #17a2b8;
+}
+
+.trip-actions .btn-primary {
+  background-color: #007bff;
+}
+
+.trip-actions .btn:hover {
+  opacity: 0.9;
+}
+
+.trip-content {
+	display: flex;
+	gap: 25px;
+	align-items: flex-start;
+	flex-wrap: wrap;
+}
+
+.trip-content img {
+	width: 250px;
+	height: 250px;
+	object-fit: cover;
+	display: block;
+}
+
+.trip-text {
+	max-width: 650px;
+}
+
+.trip-actions {
+	margin-top: 20px;
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.trip-actions .btn {
+	display: inline-block;
+	padding: 10px 16px;
+	text-decoration: none;
+	color: #fff;
+	border-radius: 4px;
+	font-weight: 600;
+}
+
+.trip-actions .btn-info {
+	background-color: #17a2b8;
+}
+
+.trip-actions .btn-primary {
+	background-color: #007bff;
+}
+
+/*** Booking Form ***/
+.booking-wrapper {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.booking-image img {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+  display: block;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.booking-form-card {
+  flex: 1;
+  min-width: 320px;
+  background: #f8f8f8;
+  border: 1px solid #d9d9d9;
+  padding: 25px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.form-row {
+  margin-bottom: 18px;
+}
+
+.form-row label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #1f6f78;
+}
+
+.form-row input,
+.form-row textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #bfbfbf;
+  font-size: 14px;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.form-row input:focus,
+.form-row textarea:focus {
+  outline: none;
+  border-color: #1f6f78;
+  box-shadow: 0 0 4px rgba(31, 111, 120, 0.25);
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 18px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.btn-primary {
+  background-color: #1f6f78;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #17565d;
+}
+
+.btn-secondary {
+  background-color: #888;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background-color: #666;
+}
+
+.booking-success-wrapper {
+	display: flex;
+	gap: 30px;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	margin-top: 20px;
+}
+
+.booking-success-image img {
+	width: 250px;
+	height: 250px;
+	object-fit: cover;
+	display: block;
+	border: 4px solid #fff;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.booking-success-card {
+	flex: 1;
+	min-width: 320px;
+	background: #f8f8f8;
+	border: 1px solid #d9d9d9;
+	padding: 25px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.booking-success-card h2 {
+	margin-top: 0;
+	color: #1f6f78;
+}
+
+.success-message {
+	font-size: 16px;
+	line-height: 1.6;
+	margin-bottom: 20px;
+}
+
+.success-details p {
+	margin: 10px 0;
+	font-size: 15px;
+}
 /** News **/
 #news {
 	display: inline-block;
@@ -473,13 +699,7 @@ hr {
 	padding: 0 20px;
 	text-align: right;
 }
-#footer ul.navigation {
-	float: left;
-	display: inline-block;
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
+
 #footer ul.navigation li {
 	float: left;
 	margin-right: 10px;
@@ -505,12 +725,7 @@ hr {
 	text-transform: none;
 }
 /** Connect **/
-#connect {
-	float: right;
-	display: inline-block;
-	line-height: 26px;
-	margin: 12px 0 0;
-}
+
 #connect a {
 	background: url(../images/icons.png) no-repeat;
 	display: inline-block;
