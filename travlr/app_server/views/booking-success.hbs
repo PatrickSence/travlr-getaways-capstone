@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Booking Confirmed - Travlr Getaways</title>
+	<link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+	<div id="background">
+		<div id="page">
+			{{> header }}
+
+			<div id="contents">
+				<div class="box">
+					<div>
+						<div class="body">
+							<h1>Booking Confirmed</h1>
+
+							<div class="booking-success-wrapper">
+								<div class="booking-success-image">
+									<img src="/images/{{trip.image}}" alt="{{trip.name}}">
+								</div>
+
+								<div class="booking-success-card">
+									<h2>Thank You, {{booking.customerName}}!</h2>
+
+									<p class="success-message">
+										Your booking request for <strong>{{trip.name}}</strong> has been received.
+									</p>
+
+									<div class="success-details">
+										<p><strong>Email:</strong> {{booking.customerEmail}}</p>
+										<p><strong>Phone:</strong> {{booking.customerPhone}}</p>
+										<p><strong>Travelers:</strong> {{booking.travelers}}</p>
+										<p><strong>Trip Code:</strong> {{trip.code}}</p>
+									</div>
+
+									<div class="trip-actions">
+										<a href="/travel" class="btn btn-info">Back to Travel</a>
+										<a href="/travel/{{trip.code}}" class="btn btn-primary">View Trip Details</a>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{{> footer }}
+			<div id="connect">
+				<a href="http://pinterest.com/fwtemplates/" target="_blank" class="pinterest"></a>
+				<a href="http://freewebsitetemplates.com/go/facebook/" target="_blank" class="facebook"></a>
+				<a href="http://freewebsitetemplates.com/go/twitter/" target="_blank" class="twitter"></a>
+				<a href="http://freewebsitetemplates.com/go/googleplus/" target="_blank" class="googleplus"></a>
+			</div>
+
+			<p style="text-align: center;">
+				© 2023 by Travlr Getaways. All Rights Reserved
+			</p>
+		</div>
+	</div>
+</body>
+</html>

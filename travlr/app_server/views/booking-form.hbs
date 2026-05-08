@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!-- Website template by freewebsitetemplates.com -->
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>About - Travlr Getaways Web Template</title>
+	<link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+	<div id="background">
+		<div id="page">
+			<div id="page">
+			{{> header }}
+			<div id="contents">
+            <div class="box">
+                <div>
+                <div class="body">
+                    <h1>Book {{trip.name}}</h1>
+
+                    <div class="booking-wrapper">
+                    <div class="booking-image">
+                        <img src="/images/{{trip.image}}" alt="{{trip.name}}">
+                    </div>
+
+                    <div class="booking-form-card">
+                        <form method="POST" action="/travel/book/{{trip.code}}">
+                        <div class="form-row">
+                            <label for="customerName">Name</label>
+                            <input type="text" id="customerName" name="customerName" required>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="customerEmail">Email</label>
+                            <input type="email" id="customerEmail" name="customerEmail" required>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="customerPhone">Phone</label>
+                            <input type="text" id="customerPhone" name="customerPhone">
+                        </div>
+
+                        <div class="form-row">
+                            <label for="travelers">Number of Travelers</label>
+                            <input type="number" id="travelers" name="travelers" min="1" required>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="notes">Notes</label>
+                            <textarea id="notes" name="notes" rows="5"></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Submit Booking</button>
+                            <a href="/travel/{{trip.code}}" class="btn btn-secondary">Back</a>
+                        </div>
+                        </form>
+                    </div>
+                    </div>
+
+                </div>
+                </div>
+            </div>
+            </div>
+		</div>
+		<div id="page">
+				{{> footer }}
+				<div id="connect">
+					<a href="http://pinterest.com/fwtemplates/" target="_blank" class="pinterest"></a> <a href="http://freewebsitetemplates.com/go/facebook/" target="_blank" class="facebook"></a> <a href="http://freewebsitetemplates.com/go/twitter/" target="_blank" class="twitter"></a> <a href="http://freewebsitetemplates.com/go/googleplus/" target="_blank" class="googleplus"></a>
+				</div>
+			</div>
+			<p>
+				© 2023 by Travlr Getaways. All Rights Reserved
+			</p>
+		</div>
+	</div>
+</body>
+</html>
