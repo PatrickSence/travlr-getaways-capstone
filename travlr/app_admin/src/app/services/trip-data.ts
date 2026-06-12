@@ -1,11 +1,37 @@
 import { Inject, Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Trip } from '../models/trip';
 import { User } from '../models/user';
 import { AuthResponse } from '../models/auth-response';
 import { BROWSER_STORAGE } from '../storage';
+
+// Interface used by the enhanced trip search/recommendation system.
+// These fields become query parameters sent to the Express API.
+export interface TripSearchParams {
+  keyword?: string;
+  code?: string;
+  resort?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  minLength?: number;
+  maxLength?: number;
+  sortBy?: string;
+  page?: number;
+  limit?: number;
+}
+
+// Response shape returned by the enhanced backend when search,
+// filtering, sorting, or pagination is used.
+export interface TripSearchResponse {
+  count: number;
+  totalMatches: number;
+  page: number;
+  limit: number;
+  sortBy: string;
+  results: Trip[];
+}
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +46,28 @@ export class TripDataService {
   ) {}
 
   // Existing trip methods
-  public getTrips(): Observable<Trip[]> {
-    return this.http.get<Trip[]>(this.apiBaseUrl);
+  //
+  // Enhanced:
+  // This method can still return all trips with no parameters,
+  // preserving the original behavior.
+  //
+  // It can also send search/filter/sort parameters to the backend,
+  // allowing the enhanced trips.js controller to apply algorithmic
+  // filtering, weighted recommendation scoring, sorting, and pagination.
+  public getTrips(params?: TripSearchParams): Observable<Trip[] | TripSearchResponse> {
+    let queryParams = new HttpParams();
+
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          queryParams = queryParams.set(key, value.toString());
+        }
+      });
+    }
+
+    return this.http.get<Trip[] | TripSearchResponse>(this.apiBaseUrl, {
+      params: queryParams
+    });
   }
 
   public getTrip(tripCode: string): Observable<Trip> {
@@ -47,16 +93,16 @@ export class TripDataService {
   }
 
   public getBookings(): Observable<any[]> {
-  return this.http.get<any[]>(`${this.baseUrl}/bookings`, {
-    headers: this.getAuthHeaders()
-  });
-}
+    return this.http.get<any[]>(`${this.baseUrl}/bookings`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 
-public getViews(): Observable<any[]> {
-  return this.http.get<any[]>(`${this.baseUrl}/views`, {
-    headers: this.getAuthHeaders()
-  });
-}
+  public getViews(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/views`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 
   // Login endpoint
   public login(user: User, passwd: string): Observable<AuthResponse> {

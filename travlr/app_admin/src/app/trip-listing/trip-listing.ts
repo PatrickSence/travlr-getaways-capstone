@@ -4,13 +4,14 @@ import { Router } from '@angular/router';
 
 import { TripCardComponent } from '../trip-card/trip-card';
 import { Trip } from '../models/trip';
-import { TripDataService } from '../services/trip-data';
+import { TripDataService, TripSearchResponse } from '../services/trip-data';
 import { AuthenticationService } from '../services/authentication';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-trip-listing',
   standalone: true,
-  imports: [CommonModule, TripCardComponent],
+  imports: [CommonModule, TripCardComponent, FormsModule],
   templateUrl: './trip-listing.html',
   styleUrls: ['./trip-listing.css']
 })
@@ -26,23 +27,38 @@ export class TripListingComponent implements OnInit {
   ) {
     console.log('trip-listing constructor');
   }
-  public isLoggedIn() {
+
+  public isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
+
   addTrip(): void {
     this.router.navigate(['/add-trip']);
   }
 
   ngOnInit(): void {
     console.log('ngOnInit');
+    this.loadTrips();
+  }
 
+  loadTrips(): void {
     this.tripDataService.getTrips().subscribe({
-      next: (value: Trip[]) => {
-        this.trips = value;
-        this.message =
-          value.length > 0
-            ? `There are ${value.length} trips available.`
-            : 'There were no trips retrieved from the database';
+      next: (value: Trip[] | TripSearchResponse) => {
+        if (Array.isArray(value)) {
+          this.trips = value;
+
+          this.message =
+            value.length > 0
+              ? `There are ${value.length} trips available.`
+              : 'There were no trips retrieved from the database';
+        } else {
+          this.trips = value.results;
+
+          this.message =
+            value.totalMatches > 0
+              ? `There are ${value.totalMatches} matching trips available.`
+              : 'There were no matching trips retrieved from the database';
+        }
 
         this.cdr.markForCheck();
         console.log(this.message);
@@ -50,6 +66,7 @@ export class TripListingComponent implements OnInit {
       error: (error: any) => {
         console.log('Error:', error);
         this.message = 'Error loading trips';
+        this.trips = [];
         this.cdr.markForCheck();
       }
     });

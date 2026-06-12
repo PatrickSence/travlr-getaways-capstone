@@ -1,126 +1,148 @@
 const Trip = require('../models/travlr');
+const TripSearchService = require('../services/tripSearchService');
 
-// GET /trips - list of all trips
-const tripsList = async (req, res) => {
+// The controller keeps request-body whitelisting close to the write endpoints
+// so persistence rules remain visible without coupling them to search logic.
+const sanitizeTripInput = (body) => ({
+  code: body.code,
+  name: body.name,
+  length: body.length,
+  start: body.start,
+  resort: body.resort,
+  perPerson: body.perPerson,
+  image: body.image,
+  description: body.description
+});
+
+/**
+ * GET /api/trips
+ * The controller deliberately delegates ranking and pagination to
+ * TripSearchService so this layer stays focused on HTTP concerns. MongoDB still
+ * receives the first-pass filter to reduce memory work before the service runs
+ * application-level scoring on fields currently stored as display strings.
+ */
+const tripsList = async (req, res, next) => {
   try {
-    const q = await Trip.find().exec();
-    console.log('tripsList result:', q);
+    const searchEnabled = TripSearchService.hasSearchCriteria(req.query);
+    const mongoFilter = searchEnabled ? TripSearchService.buildMongoFilter(req.query) : {};
+    const trips = await Trip.find(mongoFilter).lean().exec();
 
-    if (!q || q.length === 0) {
-      return res.status(404).json({ message: 'No trips found' });
-    } else {
-      return res.status(200).json(q);
-    }
-  } catch (err) {
-    console.log('tripsList error:', err);
-    return res.status(500).json(err);
-  }
-};
-
-// GET /trips/:tripcode - find one by code
-const tripsFindByCode = async (req, res) => {
-  console.log('--- tripsFindByCode start ---');
-  console.log('Requested tripcode:', req.params.tripcode);
-
-  try {
-    const q = await Trip.findOne({ code: req.params.tripcode }).exec();
-    console.log('Find query result:', q);
-
-    if (!q) {
-      return res.status(404).json({ message: 'Trip not found' });
-    } else {
-      return res.status(200).json(q);
-    }
-  } catch (err) {
-    console.log('FindByCode error:', err);
-    return res.status(500).json(err);
-  }
-};
-
-// POST /trips - add a new trip
-const tripAddTrip = async (req, res) => {
-  try {
-    const newTrip = new Trip({
-      code: req.body.code,
-      name: req.body.name,
-      length: req.body.length,
-      start: req.body.start,
-      resort: req.body.resort,
-      perPerson: req.body.perPerson,
-      image: req.body.image,
-      description: req.body.description
-    });
-
-    const q = await newTrip.save();
-
-    if (!q) {
-      return res.status(400).json({ message: 'Error creating trip' });
-    } else {
-      return res.status(201).json(q);
-    }
-  } catch (err) {
-    console.log('tripAddTrip error:', err);
-    return res.status(500).json(err);
-  }
-};
-
-// PUT /trips/:tripcode - update a trip
-const tripsUpdateTrip = async (req, res) => {
-  try {
-    console.log('--- tripsUpdateTrip start ---');
-    console.log('Requested tripcode:', req.params.tripcode);
-    console.log('Request body:', req.body);
-
-    const q = await Trip.findOneAndUpdate(
-      { code: req.params.tripcode },
-      {
-        code: req.body.code,
-        name: req.body.name,
-        length: req.body.length,
-        start: req.body.start,
-        resort: req.body.resort,
-        perPerson: req.body.perPerson,
-        image: req.body.image,
-        description: req.body.description
-      },
-      { new: true }
-    ).exec();
-
-    console.log('Update query result:', q);
-
-    if (!q) {
-      return res.status(404).json({ message: 'Trip not found' });
-    } else {
-      return res.status(200).json(q);
-    }
-  } catch (err) {
-    console.log('tripsUpdateTrip error:', err);
-    return res.status(500).json(err);
-  }
-};
-
-// DELETE /trips/:tripcode - delete a trip
-const tripsDeleteTrip = async (req, res) => {
-  console.log('--- tripsDeleteTrip start ---');
-  console.log('Requested tripcode:', req.params.tripcode);
-
-  try {
-    const q = await Trip.findOneAndDelete({ code: req.params.tripcode }).exec();
-    console.log('Delete query result:', q);
-
-    if (!q) {
-      console.log('Trip not found for deletion');
-      return res.status(404).json({ message: 'Trip not found' });
-    } else {
-      console.log('Trip deleted successfully');
-      return res.status(200).json({
-        message: 'Trip deleted successfully',
-        deletedTrip: q
+    if (!trips || trips.length === 0) {
+      return res.status(404).json({
+        message: 'No trips found'
       });
     }
+
+    if (!searchEnabled) {
+      // Preserve the original API contract for the Angular admin list, which
+      // expects a plain array when no search criteria are submitted.
+      return res.status(200).json(trips);
+    }
+
+    return res.status(200).json(
+      TripSearchService.buildSearchResults(trips, req.query)
+    );
   } catch (err) {
-    console.log('Delete controller error:', err);
-    return res.status(500).json(err);
+    return next(err);
+  }
+};
+
+/**
+ * GET /api/trips/:tripcode
+ * Uses lean reads because the API only serializes the result; avoiding full
+ * Mongoose document hydration lowers overhead as trip volume grows.
+ */
+const tripsFindByCode = async (req, res, next) => {
+  try {
+    const trip = await Trip.findOne({
+      code: req.params.tripcode
+    }).lean().exec();
+
+    if (!trip) {
+      return res.status(404).json({
+        message: 'Trip not found'
+      });
+    }
+
+    return res.status(200).json(trip);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+/**
+ * POST /api/trips
+ * Creates a new trip from a whitelisted payload. This prevents clients from
+ * persisting unexpected fields while keeping schema validation in the model.
+ */
+const tripAddTrip = async (req, res, next) => {
+  try {
+    const newTrip = new Trip(sanitizeTripInput(req.body));
+    const savedTrip = await newTrip.save();
+
+    if (!savedTrip) {
+      return res.status(400).json({
+        message: 'Error creating trip'
+      });
+    }
+
+    return res.status(201).json(savedTrip);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+/**
+ * PUT /api/trips/:tripcode
+ * Runs model validators during updates so the API does not bypass schema rules
+ * when using findOneAndUpdate for a single round-trip database operation.
+ */
+const tripsUpdateTrip = async (req, res, next) => {
+  try {
+    const updatedTrip = await Trip.findOneAndUpdate(
+      { code: req.params.tripcode },
+      sanitizeTripInput(req.body),
+      {
+        new: true,
+        runValidators: true
+      }
+    ).exec();
+
+    if (!updatedTrip) {
+      return res.status(404).json({
+        message: 'Trip not found'
+      });
+    }
+
+    return res.status(200).json(updatedTrip);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+/**
+ * DELETE /api/trips/:tripcode
+ * Performs a direct delete for the current CRUD scope. A future audit workflow
+ * would replace this with a soft-delete service without changing route wiring.
+ */
+const tripsDeleteTrip = async (req, res, next) => {
+  try {
+    const deletedTrip = await Trip.findOneAndDelete({
+      code: req.params.tripcode
+    }).exec();
+
+    if (!deletedTrip) {
+      return res.status(404).json({
+        message: 'Trip not found'
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Trip deleted successfully',
+      deletedTrip
+    });
+  } catch (err) {
+    return next(err);
   }
 };
 
@@ -130,6 +152,4 @@ module.exports = {
   tripAddTrip,
   tripsUpdateTrip,
   tripsDeleteTrip
-
-  
 };
