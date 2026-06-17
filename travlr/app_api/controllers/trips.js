@@ -3,6 +3,8 @@ const TripSearchService = require('../services/tripSearchService');
 
 // The controller keeps request-body whitelisting close to the write endpoints
 // so persistence rules remain visible without coupling them to search logic.
+// The whitelist is fixed-size, making request shaping O(1) regardless of how
+// many unexpected fields a client includes.
 const sanitizeTripInput = (body) => ({
   code: body.code,
   name: body.name,
@@ -19,7 +21,9 @@ const sanitizeTripInput = (body) => ({
  * The controller deliberately delegates ranking and pagination to
  * TripSearchService so this layer stays focused on HTTP concerns. MongoDB still
  * receives the first-pass filter to reduce memory work before the service runs
- * application-level scoring on fields currently stored as display strings.
+ * application-level scoring on fields currently stored as display strings. With
+ * indexed filters, database narrowing approaches O(log n + r) for n trips and r
+ * matches; only r records then enter the service's O(r log r) scoring/sort path.
  */
 const tripsList = async (req, res, next) => {
   try {
@@ -50,7 +54,8 @@ const tripsList = async (req, res, next) => {
 /**
  * GET /api/trips/:tripcode
  * Uses lean reads because the API only serializes the result; avoiding full
- * Mongoose document hydration lowers overhead as trip volume grows.
+ * Mongoose document hydration lowers constant overhead. The indexed code lookup
+ * avoids an O(n) collection scan and targets O(log n) lookup behavior.
  */
 const tripsFindByCode = async (req, res, next) => {
   try {
@@ -95,7 +100,8 @@ const tripAddTrip = async (req, res, next) => {
 /**
  * PUT /api/trips/:tripcode
  * Runs model validators during updates so the API does not bypass schema rules
- * when using findOneAndUpdate for a single round-trip database operation.
+ * when using findOneAndUpdate for a single indexed lookup and write. Targeting
+ * the unique code index keeps selection near O(log n) instead of scanning trips.
  */
 const tripsUpdateTrip = async (req, res, next) => {
   try {
@@ -124,6 +130,8 @@ const tripsUpdateTrip = async (req, res, next) => {
  * DELETE /api/trips/:tripcode
  * Performs a direct delete for the current CRUD scope. A future audit workflow
  * would replace this with a soft-delete service without changing route wiring.
+ * The unique code constraint keeps delete targeting near O(log n) by avoiding
+ * ambiguous multi-record matches.
  */
 const tripsDeleteTrip = async (req, res, next) => {
   try {

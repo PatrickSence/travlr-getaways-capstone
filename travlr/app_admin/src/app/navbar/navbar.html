@@ -27,6 +27,7 @@
           <a class="nav-link" routerLink="/">Trips</a>
           <a class="nav-link" routerLink="/bookings">Booking Requests</a>
           <a class="nav-link" routerLink="/views">Trip Analytics</a>
+          <a *ngIf="isLoggedIn()" class="nav-link" routerLink="/admin-users/create">Create Admin</a>
         </li>
       </ul>
 

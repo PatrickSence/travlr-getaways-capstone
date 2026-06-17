@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { TripCardComponent } from '../trip-card/trip-card';
 import { Trip } from '../models/trip';
-import { TripDataService, TripSearchResponse } from '../services/trip-data';
+import { TripDataService, TripSearchParams, TripSearchResponse } from '../services/trip-data';
 import { AuthenticationService } from '../services/authentication';
 import { FormsModule } from '@angular/forms';
 
@@ -18,6 +18,10 @@ import { FormsModule } from '@angular/forms';
 export class TripListingComponent implements OnInit {
   trips: Trip[] = [];
   message = 'Loading trips...';
+  keyword = '';
+  resort = '';
+  maxPrice: number | null = null;
+  sortBy = 'relevance';
 
   constructor(
     private tripDataService: TripDataService,
@@ -37,12 +41,13 @@ export class TripListingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('ngOnInit');
     this.loadTrips();
   }
 
-  loadTrips(): void {
-    this.tripDataService.getTrips().subscribe({
+  loadTrips(params?: TripSearchParams): void {
+    this.message = 'Loading trips...';
+
+    this.tripDataService.getTrips(params).subscribe({
       next: (value: Trip[] | TripSearchResponse) => {
         if (Array.isArray(value)) {
           this.trips = value;
@@ -61,14 +66,31 @@ export class TripListingComponent implements OnInit {
         }
 
         this.cdr.markForCheck();
-        console.log(this.message);
       },
       error: (error: any) => {
-        console.log('Error:', error);
         this.message = 'Error loading trips';
         this.trips = [];
         this.cdr.markForCheck();
       }
     });
+  }
+
+  searchTrips(): void {
+    const searchParams: TripSearchParams = {
+      keyword: this.keyword.trim() || undefined,
+      resort: this.resort.trim() || undefined,
+      maxPrice: this.maxPrice ?? undefined,
+      sortBy: this.sortBy || 'relevance'
+    };
+
+    this.loadTrips(searchParams);
+  }
+
+  resetSearch(): void {
+    this.keyword = '';
+    this.resort = '';
+    this.maxPrice = null;
+    this.sortBy = 'relevance';
+    this.loadTrips();
   }
 }

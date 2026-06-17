@@ -1,7 +1,9 @@
 // Express composition root for Travlr.
 // Middleware order, route mounting, and error boundaries are centralized here
 // so API controllers, server-rendered pages, and the Angular admin client share
-// one predictable request pipeline without duplicating infrastructure logic.
+// one predictable request pipeline. Express evaluates middleware in O(m) time
+// for m registered layers, so grouping API/page concerns here keeps that path
+// explicit and avoids duplicated per-controller routing work.
 require('dotenv').config();
 
 const createError = require('http-errors');
@@ -42,8 +44,9 @@ const app = express();
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProduction = nodeEnv === 'production';
 
-// The origin list is normalized once at startup so deployed Angular clients can
-// be added through configuration without changing application code.
+// The origin list is normalized once at startup in O(k) time for k configured
+// origins. Request-time CORS checks then scan this small allowlist instead of
+// reparsing configuration on every API call.
 const corsOrigins = (process.env.CORS_ORIGINS || 'http://localhost:4200')
   .split(',')
   .map((origin) => origin.trim())
@@ -58,14 +61,16 @@ app.set('view engine', 'hbs');
 app.use(logger(isProduction ? 'combined' : 'dev'));
 app.use(securityHeaders);
 
-// Request size limits run before controllers so oversized payloads are rejected
-// consistently before they can consume route or database resources.
+// Request size limits run before controllers so invalid payloads are rejected
+// before route/database work. This caps memory exposure and prevents
+// downstream handlers from doing avoidable O(n) parsing on oversized bodies.
 app.use(express.json({ limit: process.env.JSON_LIMIT || '1mb' }));
 app.use(express.urlencoded({ extended: false, limit: process.env.FORM_LIMIT || '1mb' }));
 app.use(cookieParser());
 
-// Static assets are cacheable in production for lower repeat-load cost, while
-// development keeps cache disabled so page and CSS changes are immediately visible.
+// Static caching shifts repeat asset requests toward browser/cache validation,
+// reducing repeated server-side file work from full transfer cost to near O(1)
+// metadata checks for common refreshes.
 app.use(
   express.static(path.join(__dirname, 'public'), {
     maxAge: isProduction ? '1d' : 0,
@@ -75,8 +80,9 @@ app.use(
 
 app.use(passport.initialize());
 
-// API-only middleware keeps browser cross-origin and JSON response policies off
-// the customer-facing Handlebars pages, preserving separate response surfaces.
+// API-only middleware keeps cross-origin and JSON envelope work off page routes.
+// This reduces the constant work done on each customer-facing request while
+// preserving the O(m) Express pipeline as separate, predictable surfaces.
 app.use('/api', createCorsMiddleware(corsOrigins));
 app.use('/api', apiResponseHelper);
 
@@ -90,8 +96,9 @@ app.use('/news', newsRouter);
 app.use('/rooms', roomsRouter);
 app.use('/api', apiRouter);
 
-// Error middleware is ordered from specific to general so API clients receive
-// JSON contracts while browser users receive rendered site pages.
+// Error middleware is ordered from specific to general. The first matching
+// handler terminates the pipeline, avoiding unnecessary downstream checks and
+// keeping error resolution linear in the small number of registered handlers.
 app.use('/api', apiNotFoundHandler);
 app.use(pageNotFoundHandler(createError));
 app.use(unauthorizedErrorHandler);

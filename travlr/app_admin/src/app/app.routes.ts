@@ -6,6 +6,7 @@ import { DeleteTripComponent } from './delete-trip/delete-trip';
 import { LoginComponent } from './login/login';
 import { BookingsComponent } from './bookings/bookings';
 import { ViewsComponent } from './views/views';
+import { CreateAdminUserComponent } from './create-admin-user/create-admin-user';
 
 export const routes: Routes = [
   { path: '', component: TripListingComponent, pathMatch: 'full' },
@@ -13,6 +14,7 @@ export const routes: Routes = [
   { path: 'edit-trip', component: EditTripComponent },
   { path: 'trip/:tripCode/delete', component: DeleteTripComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'admin-users/create', component: CreateAdminUserComponent },
   { path: 'bookings', component: BookingsComponent },
   { path: 'views', component: ViewsComponent }
 ];

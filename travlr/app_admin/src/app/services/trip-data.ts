@@ -33,6 +33,17 @@ export interface TripSearchResponse {
   results: Trip[];
 }
 
+export interface CreateAdminUserRequest {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface UpdateAdminPasswordRequest {
+  email: string;
+  password: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -112,6 +123,18 @@ export class TripDataService {
   // Register endpoint
   public register(user: User, passwd: string): Observable<AuthResponse> {
     return this.handleAuthAPICall('register', user, passwd);
+  }
+
+  public createAdminUser(adminUser: CreateAdminUserRequest): Observable<any> {
+    return this.http.post(`${this.baseUrl}/register`, adminUser, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  public updateAdminPassword(passwordUpdate: UpdateAdminPasswordRequest): Observable<any> {
+    return this.http.put(`${this.baseUrl}/admin-users/password`, passwordUpdate, {
+      headers: this.getAuthHeaders()
+    });
   }
 
   // Shared helper for login/register

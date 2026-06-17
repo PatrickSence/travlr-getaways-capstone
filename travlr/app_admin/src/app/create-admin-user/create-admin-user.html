@@ -1,0 +1,97 @@
+<div class="admin-user-page">
+  <h2>Admin User Access</h2>
+
+  <div class="btn-group mb-3" role="group" aria-label="Admin user actions">
+    <button
+      type="button"
+      class="btn"
+      [class.btn-primary]="mode === 'create'"
+      [class.btn-outline-primary]="mode !== 'create'"
+      (click)="setMode('create')">
+      Create Admin
+    </button>
+
+    <button
+      type="button"
+      class="btn"
+      [class.btn-primary]="mode === 'updatePassword'"
+      [class.btn-outline-primary]="mode !== 'updatePassword'"
+      (click)="setMode('updatePassword')">
+      Update Password
+    </button>
+  </div>
+
+  <form (ngSubmit)="submitAdminUserForm()" #adminUserForm="ngForm" class="admin-user-form">
+    <div class="mb-3" *ngIf="mode === 'create'">
+      <label for="name" class="form-label">Name</label>
+      <input
+        id="name"
+        name="name"
+        type="text"
+        class="form-control"
+        [(ngModel)]="adminUser.name"
+        required
+        autocomplete="name"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        class="form-control"
+        [(ngModel)]="adminUser.email"
+        required
+        autocomplete="email"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        class="form-control"
+        [(ngModel)]="adminUser.password"
+        required
+        minlength="12"
+        autocomplete="new-password"
+      />
+      <div class="form-text">
+        Use at least 12 characters with uppercase, lowercase, number, and symbol.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="confirmPassword" class="form-label">Confirm Password</label>
+      <input
+        id="confirmPassword"
+        name="confirmPassword"
+        type="password"
+        class="form-control"
+        [(ngModel)]="adminUser.confirmPassword"
+        required
+        autocomplete="new-password"
+      />
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+      {{
+        isSubmitting
+          ? (mode === 'create' ? 'Creating...' : 'Updating...')
+          : (mode === 'create' ? 'Create Admin User' : 'Update Password')
+      }}
+    </button>
+
+    <div *ngIf="formError" class="alert alert-danger mt-3">
+      {{ formError }}
+    </div>
+
+    <div *ngIf="successMessage" class="alert alert-success mt-3">
+      {{ successMessage }}
+    </div>
+  </form>
+</div>

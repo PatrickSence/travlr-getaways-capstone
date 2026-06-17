@@ -1,164 +1,100 @@
-// ------------------------------------------------------------
-// MONGOOSE IMPORT
-// ------------------------------------------------------------
-// Import the Mongoose library used to define MongoDB
-// schemas and interact with the database.
-// Planned Enhancement:
-// Future enhancements will expand database relationships,
-// validation rules, indexing, and analytics support
-// throughout the application.
-// ------------------------------------------------------------
-
 const mongoose = require('mongoose');
 
-// ------------------------------------------------------------
-// TRIP SCHEMA DEFINITION
-// ------------------------------------------------------------
-// Define the structure of trip documents stored in the
-// MongoDB trips collection.
-// This schema currently supports the customer-facing
-// travel pages and Angular administrative CRUD features.
-// Planned Enhancement:
-// Future enhancements will expand this schema to support:
-//
-// - customer booking relationships
-// - saved trips and wishlists
-// - trip analytics and popularity tracking
-// - recommendation scoring
-// - enhanced validation rules
-// - indexed search optimization
-// - pricing calculations
-// - trip categories and tags
-// - review and rating support
-// ------------------------------------------------------------
-
+// Trip is the stable catalog model used by both the public travel pages and the
+// Angular admin CRUD workflow, so this schema keeps display-friendly fields
+// while the service layer handles derived search/scoring behavior. Indexes below
+// move common lookups from O(n) collection scans toward O(log n) access paths.
 const tripSchema = new mongoose.Schema({
 
-  // --------------------------------------------------------
-  // Unique trip code used to identify trips throughout
-  // the application and API routes.
-  // Indexed to improve query performance.
-  // Planned Enhancement:
-  // Add unique validation and support for optimized
-  // search and recommendation algorithms.
-  // --------------------------------------------------------
+  // Code is the business identifier used in routes and admin operations; keeping
+  // it unique prevents ambiguous update/delete behavior. The unique index also
+  // supports near O(log n) route lookups by trip code as the catalog grows.
   code: {
     type: String,
     required: true,
-    index: true
+    unique: true,
+    uppercase: true,
+    trim: true,
+    minlength: 2,
+    maxlength: 20
   },
 
-  // --------------------------------------------------------
-  // Name of the travel package or destination.
-  // Indexed to improve searching and filtering.
-  // Planned Enhancement:
-  // Support keyword searching, recommendation scoring,
-  // and advanced filtering features.
-  // --------------------------------------------------------
+  // Name is indexed because dashboard browsing often sorts or filters by label;
+  // indexed access avoids repeatedly scanning every trip for common list views.
   name: {
     type: String,
     required: true,
-    index: true
+    trim: true,
+    maxlength: 100
   },
 
-  // --------------------------------------------------------
-  // Duration of the trip.
-  // Planned Enhancement:
-  // Convert to numeric duration values to support
-  // improved sorting, filtering, and recommendation logic.
-  // --------------------------------------------------------
+  // Length remains a string for compatibility with existing seed data and UI
+  // display; numeric parsing is isolated in the search service until migration.
   length: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
+    maxlength: 40
   },
 
-  // --------------------------------------------------------
-  // Starting date for the trip package.
-  // Planned Enhancement:
-  // Add indexing and support for seasonal analytics,
-  // availability tracking, and calendar-based searches.
-  // --------------------------------------------------------
+  // Start uses a Date so later availability, analytics, and chronological
+  // sorting can rely on a native comparable value and an ordered index rather
+  // than parsing strings in O(n) application code.
   start: {
     type: Date,
     required: true
   },
 
-  // --------------------------------------------------------
-  // Resort or destination associated with the trip.
-  // Planned Enhancement:
-  // Add location categories and destination metadata
-  // to support recommendation and analytics systems.
-  // --------------------------------------------------------
+  // Resort is normalized at write time so dashboard filters avoid mismatches
+  // caused by accidental whitespace. The resort index supports O(log n + r)
+  // filtering where r is the number of matching trips.
   resort: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
+    maxlength: 100
   },
 
-  // --------------------------------------------------------
-  // Price per traveler for the trip package.
-  // Currently stored as a string.
-  // Planned Enhancement:
-  // Convert to Number type to support:
-  // - price filtering
-  // - sorting
-  // - budgeting calculations
-  // - booking totals
-  // - analytics reporting
-  // --------------------------------------------------------
+  // Price remains display-formatted for the current UI contract. The search
+  // service converts it when numeric filtering or sorting is required.
   perPerson: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
+    maxlength: 40
   },
 
-  // --------------------------------------------------------
-  // Image path associated with the trip package.
-  // Planned Enhancement:
-  // Add image validation, cloud storage integration,
-  // and support for multiple gallery images.
-  // --------------------------------------------------------
+  // Image stores the public asset filename used by templates; upload/storage
+  // concerns stay outside this catalog model.
   image: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
+    maxlength: 255
   },
 
-  // --------------------------------------------------------
-  // Detailed trip description displayed to users.
-  // Planned Enhancement:
-  // Add support for keyword indexing, trip tags,
-  // recommendation matching, and AI-assisted search.
-  // --------------------------------------------------------
+  // Description is kept on the trip document because it is displayed directly
+  // and contributes to recommendation scoring.
   description: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
+    maxlength: 2000
   }
 
+}, {
+  // Timestamps add O(1) metadata writes per mutation while supporting audit and
+  // troubleshooting views without a separate logging collection.
+  timestamps: true
 });
 
-// ------------------------------------------------------------
-// MONGOOSE MODEL CREATION
-// ------------------------------------------------------------
-// Create the Trip model connected to the MongoDB
-// trips collection.
-// Planned Enhancement:
-// Additional related models will be added, including:
-//
-// - User
-// - Booking
-// - SavedTrip
-// - TripView
-// - Review
-//
-// These models will support a more advanced,
-// database-driven travel management platform.
-// ------------------------------------------------------------
+// These indexes match the current route/search access patterns. Maintaining
+// them adds write overhead, but improves read-heavy admin/customer workflows by
+// avoiding O(n) scans on common filters and chronological sorts.
+tripSchema.index({ name: 1 });
+tripSchema.index({ resort: 1 });
+tripSchema.index({ start: 1 });
 
 const Trip = mongoose.model('trips', tripSchema);
-
-// ------------------------------------------------------------
-// MODULE EXPORT
-// ------------------------------------------------------------
-// Export the Trip model so it can be used throughout
-// the Express API controllers and application routes.
-// ------------------------------------------------------------
 
 module.exports = Trip;

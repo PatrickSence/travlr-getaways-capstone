@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
+import { Observable, tap } from 'rxjs';
 import { BROWSER_STORAGE } from '../storage';
 import { User } from '../models/user';
 import { AuthResponse } from '../models/auth-response';
@@ -36,8 +37,12 @@ export class AuthenticationService {
     const token = this.getToken();
 
     if (token) {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.exp > (Date.now() / 1000);
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.exp > (Date.now() / 1000);
+      } catch {
+        this.logout();
+      }
     }
 
     return false;
@@ -51,42 +56,17 @@ export class AuthenticationService {
   }
 
   // Login user and save JWT
-  public login(user: User, passwd: string): void {
-  this.tripDataService.login(user, passwd)
-    .subscribe({
-      next: (value: any) => {
-        console.log('LOGIN response:', value);
-        console.log('LOGIN token:', value?.token);
-
-        if (value) {
-          this.authResp = value;
-          this.saveToken(this.authResp.token);
-          console.log('Token saved to storage:', this.getToken());
-        }
-      },
-      error: (error: any) => {
-        console.log('Login error:', error);
-      }
-    });
-}
+  public login(user: User, passwd: string): Observable<AuthResponse> {
+    return this.tripDataService.login(user, passwd).pipe(
+      tap((value: AuthResponse) => {
+        this.authResp = value;
+        this.saveToken(value.token);
+      })
+    );
+  }
 
   // Register user and save JWT
-  public register(user: User, passwd: string): void {
-  this.tripDataService.register(user, passwd)
-    .subscribe({
-      next: (value: any) => {
-        console.log('REGISTER response:', value);
-        console.log('REGISTER token:', value?.token);
-
-        if (value) {
-          this.authResp = value;
-          this.saveToken(this.authResp.token);
-          console.log('Token saved to storage:', this.getToken());
-        }
-      },
-      error: (error: any) => {
-        console.log('Register error:', error);
-      }
-    });
-}
+  public register(user: User, passwd: string): Observable<AuthResponse> {
+    return this.tripDataService.register(user, passwd);
+  }
 }

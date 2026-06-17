@@ -1,5 +1,5 @@
 const Trip = require('../../app_api/models/travlr');
-const TripView = require('../../app_api/models/tripView');
+const TripView = require('../../app_api/models/tripview');
 
 const tripDetails = async (req, res) => {
   try {

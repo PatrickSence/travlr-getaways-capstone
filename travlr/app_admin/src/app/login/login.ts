@@ -30,9 +30,6 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {}
 
   public onLoginSubmit(): void {
-    console.log('onLoginSubmit fired');
-    console.log(this.credentials);
-
     this.formError = '';
 
     if (!this.credentials.email || !this.credentials.password || !this.credentials.name) {
@@ -44,24 +41,19 @@ export class LoginComponent implements OnInit {
   }
 
   private doLogin(): void {
-    console.log('doLogin fired');
-
     const newUser = {
       name: this.credentials.name,
       email: this.credentials.email
     } as User;
 
-    this.authenticationService.login(newUser, this.credentials.password);
-
-    setTimeout(() => {
-      console.log('Checking login status...');
-      console.log('Token:', this.authenticationService.getToken());
-
-      if (this.authenticationService.isLoggedIn()) {
-        this.router.navigate(['/']);
-      } else {
-        this.formError = 'Login failed. Please try again.';
-      }
-    }, 1000);
+    this.authenticationService.login(newUser, this.credentials.password)
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/']);
+        },
+        error: () => {
+          this.formError = 'Login failed. Please try again.';
+        }
+      });
   }
 }
