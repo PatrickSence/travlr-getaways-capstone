@@ -3,6 +3,9 @@
 ## Overview
 Travlr Getaways is a full-stack travel web application built with Angular, Express.js, Node.js, MongoDB, and Mongoose. This repository contains my Computer Science Capstone enhancement work across software engineering and design, algorithms and data structures, and database architecture.
 
+##Code Review Link
+https://youtu.be/wBTeVnK5rkQ
+
 ## Technology Stack
 - Angular
 - Node.js
