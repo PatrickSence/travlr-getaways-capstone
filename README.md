@@ -38,10 +38,16 @@ Enhanced `travlr.js` database model planning with stronger validation, numeric d
 
 ## Screenshots
 ### Customer-Facing Homepage
-<img width="1343" height="810" alt="image" src="https://github.com/user-attachments/assets/e25105fd-44ab-4d9f-a124-cdc86b3adebd" />
+
+<img width="963" height="891" alt="image" src="https://github.com/user-attachments/assets/c670865d-dfdd-487d-b493-7f4638e18734" />
+
 ### Angular Admin Trip Listing
-<img width="678" height="766" alt="image" src="https://github.com/user-attachments/assets/10c97ca2-88b6-4ddc-8504-7bac26edf139" />
+
+<img width="1296" height="894" alt="image" src="https://github.com/user-attachments/assets/9a8b3aa3-97b2-4e24-9f0a-b5c024315aa9" />
+
 ### Enhanced Search and Recommendation Results
+
+<img width="1322" height="920" alt="image" src="https://github.com/user-attachments/assets/a162774f-87cd-4b71-ba19-46ce4ef12dac" />
 
 ## Outcome 1: Collaborative Environments and Decision Support
 
