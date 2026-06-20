@@ -90,7 +90,26 @@ The project also identifies future security improvements, including customer/adm
 ## Security Notes
 This repository uses `.env.example` for configuration examples. Real secrets, database credentials, and JWT keys are not committed.
 
+## Installation and Setup
 
+## Prerequisites
+
+- Node.js
+- Angular CLI
+- MongoDB or MongoDB Atlas
+- npm
+
+## Backend Setup
+
+
+npm install
+npm start
+
+## Angualar Admin Setup
+
+cd app_admin
+npm install
+ng serve
 
 ## Author
 Patrick Sencenich
